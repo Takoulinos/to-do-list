@@ -1,5 +1,7 @@
-// Import our custom CSS
 import '../scss/styles.scss'
-
-// Import all of Bootstrap's JS
 import * as bootstrap from 'bootstrap'
+import { Project } from './todos.js'
+import { addProject } from './dom';
+
+const def = new Project('default', 'asdf', '2023', 'relaxed', [1,2,3]);
+addProject(def)
