@@ -40,6 +40,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
+    "date-fns": "^2.29.3",
     "handlebars": "^4.7.7"
   }
 }
