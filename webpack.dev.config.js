@@ -22,12 +22,10 @@ module.exports = {
     },
     module: {
         rules: [
-            // {
-            //     test: /.css$/,
-            //     use: [
-            //         'style-loader', 'css-loader'
-            //     ]
-            // },
+                    {
+                      test: /\.png/,
+                      type: 'asset/resource'                    
+                  },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,

@@ -1,1 +1,14 @@
 @import "~bootstrap/scss/bootstrap";
+
+[class^=col]:not(.collapse) {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    background-color: #6c757d;
+    color: white;
+    border: 1px solid white;
+}
+
+.row {
+    background-color: #f8f9fa;
+    outline: 1px solid white;
+  }
