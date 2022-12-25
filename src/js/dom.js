@@ -84,6 +84,28 @@ export function renderProjects() {
 export function renderAllTasks() {
     clearPage();
     const contents = document.querySelector('.contents');
+    //this is the bar with whe collumn names just above the task list
+    const columnNames = document.createElement('div');
+    columnNames.classList.add('row');
+    contents.appendChild(columnNames);
+    const task = document.createElement('div');
+    task.classList.add('col');
+    task.textContent = 'Task';
+    columnNames.appendChild(task);
+    const dueDate = document.createElement('div');
+    dueDate.classList.add('col');
+    dueDate.textContent = 'Due Date';
+    columnNames.appendChild(dueDate);
+    const priority = document.createElement('div');
+    priority.classList.add('col');
+    priority.textContent = 'Priority';
+    columnNames.appendChild(priority);
+    const status = document.createElement('div');
+    status.classList.add('col');
+    status.textContent = 'Status';
+    columnNames.appendChild(status);
+
+    //for every project we go through every task and append it to the contents of the page
     projects.forEach(project => {
         project.tasks.forEach(task => {
             const newTask = document.createElement('div');
