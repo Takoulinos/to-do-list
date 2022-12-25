@@ -30,18 +30,26 @@ export function renderNavBar() {
     container.appendChild(navBar);
 
     const projects = document.createElement('div');
-    projects.classList.add('col',);
+    projects.classList.add('col', 'projects');
     projects.innerText = 'Projects';
     const tasks = document.createElement('div');
-    tasks.classList.add('col')
+    tasks.classList.add('col', 'tasks')
     tasks.innerText = 'Tasks';
-    const calendr = document.createElement('div');
-    calendr.classList.add('col');
-    calendr.innerText = 'Calendar';
+    const calendar = document.createElement('div');
+    calendar.classList.add('col','calendar');
+    calendar.innerText = 'Calendar';
 
     navBar.appendChild(projects);
     navBar.appendChild(tasks);
-    navBar.appendChild(calendr);
+    navBar.appendChild(calendar);
+
+    addGlobalEventListener('click', '.projects', e => {
+        renderProjects();
+    })
+
+    addGlobalEventListener('click', '.tasks', e => {
+        renderAllTasks();
+    })
 }
 
 function clearPage() {
@@ -95,7 +103,7 @@ export function renderAllTasks() {
             priority.classList.add('col');
             priority.textContent = task.priority;
             newTask.appendChild(priority);
-            //add ststus
+            //add status
             const status = document.createElement('div');
             status.classList.add('col');
             status.textContent = task.status;
@@ -103,5 +111,13 @@ export function renderAllTasks() {
             //append task
             contents.appendChild(newTask);
         })
+    })
+}
+
+function addGlobalEventListener(type, selector, callback) {
+    document.addEventListener(type, e => {
+        if (e.target.matches(selector)) {
+            callback(e);
+        }
     })
 }
