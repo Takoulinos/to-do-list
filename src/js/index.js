@@ -7,10 +7,6 @@ import { renderHeader, renderNavBar, renderProjects, renderAllTasks } from './do
 renderHeader()
 renderNavBar()
 const def = new Project('default project');
-const task1 = new Task('task 1', 'asdfasdf asdf as', new Date(), 'relaxed');
-const task2 = new Task('task 1', 'asdfasdf asdf as', new Date(), 'relaxed');
-def.tasks.push(task1);
-def.tasks.push(task2);
 projects.push(def)
 renderAllTasks()
 // addProject(def);

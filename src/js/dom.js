@@ -1,6 +1,7 @@
-import Logo from '../images/logo.png'
+import Logo from '../images/logo.png';
 import { projects, Task } from './todos';
-import { format, parseISO } from 'date-fns'
+import { format, parseISO } from 'date-fns';
+import { v4 as uuidv4 } from 'uuid';
 
 const body = document.querySelector('body');
 const container = document.createElement('div');
@@ -172,16 +173,19 @@ export function renderAllTasks() {
     cancelButton.textContent = 'Cancel';
     buttons.appendChild(cancelButton);
     const submitButton = document.createElement('button');
+    //uique id to associate buttons with tasks
+    const id = uuidv4();
     setAttributes(submitButton, {'class':'btn btn-success', 'type':'button', 'id':'submit'});
     submitButton.textContent = 'Submit';
     buttons.appendChild(submitButton);
     collapseForm.appendChild(buttons);
     submitButton.addEventListener('click', function() {
         const newTask = new Task(
-        document.querySelector('#inputTask').value,
-        '',
-        parseISO(document.querySelector('#inputDate').value),
-        document.querySelector('#selectPriority').value
+            id,
+            document.querySelector('#inputTask').value,
+            '',
+            parseISO(document.querySelector('#inputDate').value),
+            document.querySelector('#selectPriority').value
         );
         return addTask(newTask);
     });
@@ -211,7 +215,7 @@ export function renderAllTasks() {
             status.classList.add('col','d-flex','justify-content-between');
             status.textContent = task.status;
             const removeButton = document.createElement('buton');
-            removeButton.classList.add('btn', 'btn-danger', 'remove-task');
+            setAttributes(removeButton, {'class':'btn btn-danger remove-task', 'data-id':`${task.id}`})
             removeButton.textContent = 'remove';
             removeButton.addEventListener('click', removeTask);
             status.appendChild(removeButton);
@@ -242,5 +246,17 @@ function addTask(task, project = projects[0]) {
 }
 
 function removeTask(e) {
-    console.log(e.target);
+    const id = e.target.getAttribute('data-id');
+    let found = false;
+    for (let i = 0; i<projects.length; i++) {
+        for (let j=0; j<projects[i].tasks.length; j++) {
+            if (projects[i].tasks[j].id === id) {
+                projects[i].tasks.splice(j, 1);
+                found = true;
+            }
+            if(found===true) {break};
+        }
+        if(found===true) {break};
+    }
+    renderAllTasks();
 }
