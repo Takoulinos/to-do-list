@@ -10,10 +10,12 @@ export class Task {
 }
 
 export class Project {
-    constructor (title) {
+    constructor (title, id) {
         this.title = title;
+        this.id = id;
         this.tasks = [];
     }
 }
 
-export const projects = [];
+const def = new Project('default project', 'default');
+export const projects = [def];

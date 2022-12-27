@@ -6,8 +6,6 @@ import { renderHeader, renderNavBar, renderProjects, renderAllTasks } from './do
 
 renderHeader()
 renderNavBar()
-const def = new Project('default project');
-projects.push(def)
 renderAllTasks()
 // addProject(def);
 // addTask(task1)

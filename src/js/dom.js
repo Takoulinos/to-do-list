@@ -1,5 +1,5 @@
 import Logo from '../images/logo.png';
-import { projects, Task } from './todos';
+import { projects, Task, Project } from './todos';
 import { format, parseISO } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -27,22 +27,25 @@ export function renderHeader() {
 
 export function renderNavBar() {
     const navBar = document.createElement('div');
-    navBar.classList.add('nav', 'row');
+    navBar.classList.add('navbar', 'navbar-expand-lg', 'navbar-light', 'bg-light');
     container.appendChild(navBar);
+    const navContainer = document.createElement('div');
+    navContainer.classList.add('container', 'navbar-nav', 'justify-content-around');
+    navBar.appendChild(navContainer);
 
     const projects = document.createElement('div');
-    projects.classList.add('col', 'projects');
-    projects.innerText = 'Projects';
+    projects.classList.add('projects', 'nav-link');
+    projects.textContent = 'Projects';
     const tasks = document.createElement('div');
-    tasks.classList.add('col', 'tasks')
-    tasks.innerText = 'Tasks';
+    tasks.classList.add('tasks', 'nav-link')
+    tasks.textContent = 'Tasks';
     const calendar = document.createElement('div');
-    calendar.classList.add('col','calendar');
-    calendar.innerText = 'Calendar';
+    calendar.classList.add('calendar', 'nav-link');
+    calendar.textContent = 'Calendar';
 
-    navBar.appendChild(projects);
-    navBar.appendChild(tasks);
-    navBar.appendChild(calendar);
+    navContainer.appendChild(projects);
+    navContainer.appendChild(tasks);
+    navContainer.appendChild(calendar);
 
     addGlobalEventListener('click', '.projects',renderProjects)
 
@@ -66,15 +69,71 @@ function clearPage() {
 export function renderProjects() {
     clearPage();
     const contents = document.querySelector('.contents');
+
+    //button to bring up form
+    const addNewProject = document.createElement('button');
+    addNewProject.textContent = 'Add new project';
+    setAttributes(addNewProject, {'class': 'btn btn-primary', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':'#collapseForm', 'aria-expanded':'false', 'aria-controls':'collapseForm'});
+    contents.appendChild(addNewProject);
+
+    //form for adding new project
+    const collapseForm = document.createElement('form');
+    setAttributes(collapseForm, {'class':'collapse row', 'id':'collapseForm'});
+    contents.appendChild(collapseForm);
+    //project name
+    const newProject = document.createElement('div');
+    newProject.classList.add('col');
+    const label = document.createElement('label');
+    setAttributes(label, {'class':'form-label', 'for':'inputProject'});
+    label.textContent = 'Project Title';
+    newProject.appendChild(label);
+    const projectInput = document.createElement('input');
+    setAttributes(projectInput, {'class':'form-control', 'id':'inputProject', 'type':'text'});
+    newProject.appendChild(projectInput);
+    collapseForm.appendChild(newProject);
+    //buttons
+    const buttons = document.createElement('div');
+    buttons.classList.add('col');
+    const cancelButton = document.createElement('button');
+    setAttributes(cancelButton, {'class':'btn btn-danger', 'type':'button'});
+    cancelButton.textContent = 'Cancel';
+    buttons.appendChild(cancelButton);
+    const submitButton = document.createElement('button');
+    setAttributes(submitButton, {'class':'btn btn-success', 'type':'button', 'id':'submit'});
+    submitButton.textContent = 'Submit';
+    buttons.appendChild(submitButton);
+    collapseForm.appendChild(buttons);
+    submitButton.addEventListener('click', function() {
+        const newProject = new Project(
+            document.querySelector('#inputProject').value,
+            uuidv4(),
+        );
+        return addProject(newProject);
+    });
+
+    //render every project accordion style
+    const accordion = document.createElement('div');
+    setAttributes(accordion, {'class':'accordion', 'id':'accordionPanelsStayOpenExample'});
+    contents.appendChild(accordion);
     projects.forEach(project => {
         const newProject = document.createElement('div');
-        newProject.classList.add('row');
-        newProject.setAttribute('id', `${project.title}`);
-        contents.appendChild(newProject);
-        const title = document.createElement('div');
-        title.textContent = project.title;
-        title.classList.add('col');
+        setAttributes(newProject, {'class':'accordion-item', 'data-id':`${project.id}`});
+        accordion.appendChild(newProject);
+        const title = document.createElement('h2');
+        setAttributes(title, {'class':'accordion-header', 'id':'panelsStayOpen-headingOne'});
         newProject.appendChild(title);
+        const button = document.createElement('button');
+        setAttributes(button, {'class':'accordion-button', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':'#panelsStayOpen-collapseOne','aria-expanded':'true', 'aria-controls':'panelsStayOpen-collapseOne' })
+        button.textContent = project.title;
+        title.appendChild(button);
+        const accordionCollapse = document.createElement('div');
+        setAttributes(accordionCollapse, {'id':'panelsStayOpen-collapseOne', 'class':'accordion-collapse collapse show', 'aria-labelledby':'panelsStayOpen-headingOne'});
+        newProject.appendChild(accordionCollapse);
+        const accordionBody = document.createElement('div');
+        setAttributes(accordionBody, {'class':'accordion-body'});
+        accordionCollapse.appendChild(accordionBody);
+        const taskList = document.createElement('ul');
+        accordionBody.appendChild(taskList);
     })
 }
 
@@ -112,7 +171,7 @@ export function renderAllTasks() {
     const collapseForm = document.createElement('form');
     setAttributes(collapseForm, {'class':'collapse row', 'id':'collapseForm'});
     contents.appendChild(collapseForm);
-
+    //project name
     const newTask = document.createElement('div');
     newTask.classList.add('col');
     const taskLabel = document.createElement('label');
@@ -173,15 +232,13 @@ export function renderAllTasks() {
     cancelButton.textContent = 'Cancel';
     buttons.appendChild(cancelButton);
     const submitButton = document.createElement('button');
-    //uique id to associate buttons with tasks
-    const id = uuidv4();
     setAttributes(submitButton, {'class':'btn btn-success', 'type':'button', 'id':'submit'});
     submitButton.textContent = 'Submit';
     buttons.appendChild(submitButton);
     collapseForm.appendChild(buttons);
     submitButton.addEventListener('click', function() {
         const newTask = new Task(
-            id,
+            uuidv4(),
             document.querySelector('#inputTask').value,
             '',
             parseISO(document.querySelector('#inputDate').value),
@@ -242,7 +299,12 @@ function setAttributes(el, attrs) {
 
 function addTask(task, project = projects[0]) {
     project.tasks.push(task);
-    renderAllTasks();
+    return renderAllTasks();
+}
+
+function addProject(project) {
+    projects.push(project)
+    return renderProjects()
 }
 
 function removeTask(e) {
