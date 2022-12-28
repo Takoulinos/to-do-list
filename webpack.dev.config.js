@@ -22,50 +22,54 @@ module.exports = {
     },
     module: {
         rules: [
-                    {
-                      test: /\.png/,
-                      type: 'asset/resource'                    
-                  },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
+                {
+                  test: /\.png/,
+                  type: 'asset/resource'                    
+                },
+                {
+                  test: /\.svg/,
+                  type: 'asset/inline'
+                },
+                {
+                  test: /\.js$/,
+                  exclude: /node_modules/,
+                  use: {
                     loader: 'babel-loader',
                     options: {
                         presets: [ '@babel/env' ],
                     }
-                }
-            },
-            {
-                test: /\.hbs$/,
-                use: [
-                    'handlebars-loader'
-                ]
-            },
-            {
-                test: /\.(scss)$/,
-                use: [
-                  {
-                    loader: 'style-loader'
-                  },
-                  {
-                    loader: 'css-loader'
-                  },
-                  {
-                    loader: 'postcss-loader',
-                    options: {
-                      postcssOptions: {
-                        plugins: () => [
-                          require('autoprefixer')
-                        ]
-                      }
-                    }
-                  },
-                  {
-                    loader: 'sass-loader'
                   }
-                ]
-              }
+                },
+                {
+                  test: /\.hbs$/,
+                  use: [
+                    'handlebars-loader'
+                  ]
+                },
+                {
+                  test: /\.(scss)$/,
+                  use: [
+                        {
+                          loader: 'style-loader'
+                        },
+                        {
+                          loader: 'css-loader'
+                        },
+                        {
+                          loader: 'postcss-loader',
+                          options: {
+                          postcssOptions: {
+                            plugins: () => [
+                                          require('autoprefixer')
+                                          ]
+                          }
+                          }
+                        },
+                        {
+                          loader: 'sass-loader'
+                        }
+                  ]
+                }
         ]
     },
     plugins: [

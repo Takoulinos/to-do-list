@@ -1,6 +1,6 @@
 import Logo from '../images/logo.png';
 import { projects, Task, Project } from './todos';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, compareAsc } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
 const body = document.querySelector('body');
@@ -137,19 +137,28 @@ export function renderProjects() {
         accordionBody.appendChild(taskList);
         project.tasks.forEach(task => {
             const listItem = document.createElement('li');
-            listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between');
+            listItem.classList.add('list-group-item', 'row', 'd-flex', 'flex-wrap', 'justify-content-between');
             taskList.appendChild(listItem);
             const name = document.createElement('div');
+            setAttributes(name, {'class':'col'})
             name.textContent = task.title;
             listItem.appendChild(name);
             const date = document.createElement('div');
+            setAttributes(date, {'class':'col'})
             date.textContent = format(task.dueDate, 'dd/MM/yyyy');
             listItem.appendChild(date);
-            const priority = document.createElement('div');    
+            const priority = document.createElement('div'); 
+            setAttributes(priority, {'class':'col'})   
             priority.textContent = task.priority;
             listItem.appendChild(priority);
             const status = createStatusDropdown(task);
+            setAttributes(status, {'class':'col'});
             listItem.appendChild(status);
+            //remove button
+            const btn = document.createElement('button');
+            setAttributes(btn, {'class':'btn btn-danger col-1'});
+            btn.textContent = 'delete';
+            listItem.appendChild(btn);
         })
     })
 }
@@ -186,7 +195,7 @@ export function renderAllTasks() {
 
     //form for adding a new task
     const collapseForm = document.createElement('form');
-    setAttributes(collapseForm, {'class':'collapse row', 'id':'collapseForm'});
+    setAttributes(collapseForm, {'class':'collapse row needs-validation novalidate', 'id':'collapseForm'});
     contents.appendChild(collapseForm);
     //project name
     const newTask = document.createElement('div');
@@ -199,7 +208,7 @@ export function renderAllTasks() {
     setAttributes(taskInput, {'class':'form-control', 'id':'inputTask', 'type':'text'});
     newTask.appendChild(taskInput);
     collapseForm.appendChild(newTask);
-
+    //due date
     const newDate = document.createElement('div');
     newDate.classList.add('col');
     const dateLabel = document.createElement('label');
@@ -210,7 +219,7 @@ export function renderAllTasks() {
     setAttributes(dateInput, {'class':'form-control', 'id':'inputDate', 'type':'date'});
     newDate.appendChild(dateInput);
     collapseForm.appendChild(newDate);
-
+    //priority
     const newPriority = document.createElement('div');
     newPriority.classList.add('col');
     const priorityLabel = document.createElement('label');
@@ -241,7 +250,7 @@ export function renderAllTasks() {
     priotitySelect.appendChild(option4);
     newPriority.appendChild(priotitySelect);
     collapseForm.appendChild(newPriority);
-
+    //buttons
     const buttons = document.createElement('div');
     buttons.classList.add('col');
     const cancelButton = document.createElement('button');
@@ -254,6 +263,19 @@ export function renderAllTasks() {
     buttons.appendChild(submitButton);
     collapseForm.appendChild(buttons);
     submitButton.addEventListener('click', function() {
+        //validation
+        if(validateText(document.querySelector('#inputTask').value, 3, 30)===false) {
+            alert('Please enter a valid task name (min 3 characters');
+            return
+        }
+        if(validateDate(new Date(document.querySelector('#inputDate').value))===false) {
+            alert('Please enter a valid date');
+            return
+        }
+        if(validateSelect(document.querySelector('#selectPriority').value, ['Low', 'Medium', 'High', 'Urgent'])===false){
+            alert('Plesae select a priority for your task');
+            return
+        }
         const newTask = new Task(
             uuidv4(),
             document.querySelector('#inputTask').value,
@@ -262,6 +284,7 @@ export function renderAllTasks() {
             document.querySelector('#selectPriority').value
         );
         return addTask(newTask);
+        
     });
     
     //for every project we go through every task and append it to the contents of the page
@@ -388,4 +411,19 @@ function createStatusDropdown(task) {
     });
 
     return div;
+}
+
+function validateText(text,min, max) {
+    if(text.length>=min && text.length<=max) { return true}
+    else {return false}
+}
+
+function validateDate(date) {
+    if(compareAsc(date, new Date())===1) {return true}
+    return false
+}
+
+function validateSelect(input, validInputs) {
+    if(validInputs.includes(input)) { return true }
+    return false
 }
