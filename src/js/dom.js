@@ -104,6 +104,10 @@ export function renderProjects() {
     buttons.appendChild(submitButton);
     collapseForm.appendChild(buttons);
     submitButton.addEventListener('click', function() {
+        if(validateText(document.querySelector('#inputProject').value, 3, 30)===false) { 
+            alert('Please enter a valid name for your project(at least 3 characters');
+            return 
+        }
         const newProject = new Project(
             document.querySelector('#inputProject').value,
             uuidv4(),
