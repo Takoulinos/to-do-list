@@ -7,6 +7,10 @@ export class Task {
         this.priority = priority;
         this.status = status;
     }
+
+    updateStatus(newStatus) {
+        this.status = newStatus;
+    }
 }
 
 export class Project {

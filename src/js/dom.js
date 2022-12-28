@@ -133,7 +133,24 @@ export function renderProjects() {
         setAttributes(accordionBody, {'class':'accordion-body'});
         accordionCollapse.appendChild(accordionBody);
         const taskList = document.createElement('ul');
+        setAttributes(taskList, {'class':'list-group container'});
         accordionBody.appendChild(taskList);
+        project.tasks.forEach(task => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between');
+            taskList.appendChild(listItem);
+            const name = document.createElement('div');
+            name.textContent = task.title;
+            listItem.appendChild(name);
+            const date = document.createElement('div');
+            date.textContent = format(task.dueDate, 'dd/MM/yyyy');
+            listItem.appendChild(date);
+            const priority = document.createElement('div');    
+            priority.textContent = task.priority;
+            listItem.appendChild(priority);
+            const status = createStatusDropdown(task);
+            listItem.appendChild(status);
+        })
     })
 }
 
@@ -321,4 +338,54 @@ function removeTask(e) {
         if(found===true) {break};
     }
     renderAllTasks();
+}
+
+function createStatusDropdown(task) {
+    const div = document.createElement('div');
+    setAttributes(div, {'class':'dropdown'});
+    const button = document.createElement('button');
+    setAttributes(button, {'class':'btn btn-secondary dropdown-toggle', 'type':'button', 'data-bs-toggle':'dropdown', 'aria-expanded':'false'});
+    button.textContent = task.status;
+    div.appendChild(button);
+    const list = document.createElement('ul');
+    setAttributes(list, {'class':'dropdown-menu'});
+    div.appendChild(list);
+    const notStarted = document.createElement('li');
+    const inProgress = document.createElement('li');
+    const finished = document.createElement('li');
+    list.appendChild(notStarted);
+    list.appendChild(inProgress);
+    list.appendChild(finished);
+    const notStartedLink = document.createElement('a');
+    const inProgressLink = document.createElement('a');
+    const finishedLink = document.createElement('a');
+    setAttributes(notStartedLink, {'class':'dropdown-item', 'href':'#'});
+    setAttributes(inProgressLink, {'class':'dropdown-item', 'href':'#'});
+    setAttributes(finishedLink, {'class':'dropdown-item', 'href':'#'});
+    notStartedLink.textContent = 'Not started yet';
+    inProgressLink.textContent = 'In Progress';
+    finishedLink.textContent = 'Finished';
+    notStarted.appendChild(notStartedLink);
+    inProgress.appendChild(inProgressLink);
+    finished.appendChild(finishedLink);
+    notStarted.addEventListener('click', () => {
+        task.status = 'Not started yet';
+        button.textContent = 'Not started yet';
+        button.classList.remove('btn-warning', 'btn-success');
+        button.classList.add('btn-secondary');
+    });
+    inProgress.addEventListener('click', () => {
+        task.status = 'In progress';
+        button.textContent = 'In progress';
+        button.classList.remove('btn-secondary', 'btn-success');
+        button.classList.add('btn-warning');
+    });
+    finished.addEventListener('click', () => {
+        task.status = 'Finished';
+        button.textContent = 'Finished';
+        button.classList.remove('btn-secondary', 'btn-warning');
+        button.classList.add('btn-success');
+    });
+
+    return div;
 }

@@ -73,7 +73,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'To Do List',
             template: '/src/index.hbs',
-            description: 'The Odin Project - To Do List',
+            description: 'To Do List',
         }),
     ]
 };

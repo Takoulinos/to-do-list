@@ -7,5 +7,3 @@ import { renderHeader, renderNavBar, renderProjects, renderAllTasks } from './do
 renderHeader()
 renderNavBar()
 renderAllTasks()
-// addProject(def);
-// addTask(task1)
