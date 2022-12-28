@@ -120,14 +120,14 @@ export function renderProjects() {
         setAttributes(newProject, {'class':'accordion-item', 'data-id':`${project.id}`});
         accordion.appendChild(newProject);
         const title = document.createElement('h2');
-        setAttributes(title, {'class':'accordion-header', 'id':'panelsStayOpen-headingOne'});
+        setAttributes(title, {'class':'accordion-header', 'id':`panelsStayOpen-heading${project.id}`});
         newProject.appendChild(title);
         const button = document.createElement('button');
-        setAttributes(button, {'class':'accordion-button', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':'#panelsStayOpen-collapseOne','aria-expanded':'true', 'aria-controls':'panelsStayOpen-collapseOne' })
+        setAttributes(button, {'class':'accordion-button', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':`#panelsStayOpen-collapse${project.id}`,'aria-expanded':'true', 'aria-controls':`panelsStayOpen-collapse${project.id}` })
         button.textContent = project.title;
         title.appendChild(button);
         const accordionCollapse = document.createElement('div');
-        setAttributes(accordionCollapse, {'id':'panelsStayOpen-collapseOne', 'class':'accordion-collapse collapse show', 'aria-labelledby':'panelsStayOpen-headingOne'});
+        setAttributes(accordionCollapse, {'id':`panelsStayOpen-collapse${project.id}`, 'class':'accordion-collapse collapse show', 'aria-labelledby':`panelsStayOpen-heading${project.id}`});
         newProject.appendChild(accordionCollapse);
         const accordionBody = document.createElement('div');
         setAttributes(accordionBody, {'class':'accordion-body'});
