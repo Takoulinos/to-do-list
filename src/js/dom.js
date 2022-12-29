@@ -310,7 +310,7 @@ export function renderAllTasks() {
             parseISO(document.querySelector('#inputDate').value),
             document.querySelector('#selectPriority').value
         );
-        return addTask(newTask);
+        return addTask(newTask, document.querySelector('#selectProject').value);
         
     });
     
@@ -364,8 +364,12 @@ function setAttributes(el, attrs) {
     }
   }
 
-function addTask(task, project = projects[0]) {
-    project.tasks.push(task);
+function addTask(task, projectName = 'default project') {
+    for (let i = 0; i < projects.length; i++){
+        if(projects[i].title===projectName) {
+            projects[i].tasks.push(task);
+        }
+    }
     return renderAllTasks();
 }
 
