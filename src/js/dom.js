@@ -169,8 +169,9 @@ export function renderProjects() {
             listItem.appendChild(status);
             //remove button
             const btn = document.createElement('button');
-            setAttributes(btn, {'class':'btn btn-danger col-1'});
+            setAttributes(btn, {'class':'btn btn-danger col-1', 'data-id':`${task.id}`});
             btn.textContent = 'delete';
+            btn.addEventListener('click', removeTask);
             listItem.appendChild(btn);
         })
     })
@@ -200,10 +201,12 @@ export function renderAllTasks(list = taskList()) {
     columnNames.appendChild(priority);
     sortIcon(priority)
     const status = document.createElement('div');
-    status.classList.add('col', 'sort');
+    status.classList.add('col', 'sort', 'sortByStatus');
     status.textContent = 'Status';
     columnNames.appendChild(status);
     sortIcon(status);
+    addGlobalEventListener('click', '.sortByStatus', sortTasksByStatus);
+
 
     //button to bring up the form
     const addNewTask = document.createElement('button');
@@ -483,6 +486,24 @@ function sortTasksByName() {
     list.sort((a,b) => {
         let fa = a.title.toLowerCase();
         let fb = b.title.toLowerCase();
+
+        if (fa < fb) {
+            return -1;
+        }
+        if (fa > fb) {
+            return 1;
+        }
+        return 0;
+    })
+
+    renderAllTasks(list);
+};
+
+function sortTasksByStatus() {
+    const list = taskList()
+    list.sort((a,b) => {
+        let fa = a.status.toLowerCase();
+        let fb = b.status.toLowerCase();
 
         if (fa < fb) {
             return -1;
