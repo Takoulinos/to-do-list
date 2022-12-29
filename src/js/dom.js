@@ -9,6 +9,16 @@ const container = document.createElement('div');
 container.classList.add('container', 'text-center');
 body.appendChild(container);
 
+const taskList = () => {
+    const tasks = [];
+    projects.forEach(project => {
+        project.tasks.forEach(task => {
+            tasks.push(task);
+        })
+    })
+    return tasks
+};
+
 export function renderHeader() {
     const header = document.createElement('div');
     header.classList.add('row', 'text-center');
@@ -47,8 +57,7 @@ export function renderNavBar() {
     navContainer.appendChild(tasks);
     navContainer.appendChild(calendar);
 
-    addGlobalEventListener('click', '.projects',renderProjects)
-
+    addGlobalEventListener('click', '.projects', renderProjects)
     addGlobalEventListener('click', '.tasks', renderAllTasks)
 }
 
@@ -167,7 +176,7 @@ export function renderProjects() {
     })
 }
 
-export function renderAllTasks() {
+export function renderAllTasks(list = taskList()) {
     clearPage();
     const contents = document.querySelector('.contents');
     //this is the bar with whe collumn names just above the task list
@@ -175,25 +184,26 @@ export function renderAllTasks() {
     columnNames.classList.add('row');
     contents.appendChild(columnNames);
     const task = document.createElement('div');
-    task.classList.add('col', 'sort');
+    task.classList.add('col', 'sortByName', 'sort');
     task.textContent = 'Task';
     columnNames.appendChild(task);
-    sortBy(task);
+    sortIcon(task);
+    addGlobalEventListener('click', '.sortByName', sortTasksByName);
     const dueDate = document.createElement('div');
     dueDate.classList.add('col', 'sort');
     dueDate.textContent = 'Due Date';
     columnNames.appendChild(dueDate);
-    sortBy(dueDate);
+    sortIcon(dueDate);
     const priority = document.createElement('div');
     priority.classList.add('col', 'sort');
     priority.textContent = 'Priority';
     columnNames.appendChild(priority);
-    sortBy(priority)
+    sortIcon(priority)
     const status = document.createElement('div');
     status.classList.add('col', 'sort');
     status.textContent = 'Status';
     columnNames.appendChild(status);
-    sortBy(status);
+    sortIcon(status);
 
     //button to bring up the form
     const addNewTask = document.createElement('button');
@@ -314,9 +324,8 @@ export function renderAllTasks() {
         
     });
     
-    //for every project we go through every task and append it to the contents of the page
-    projects.forEach(project => {
-        project.tasks.forEach(task => {
+    //for every project we go through every task and append it to the contents of the page    
+    list.forEach(task => {
             const newTask = document.createElement('div');
             newTask.classList.add('row');
             //add title
@@ -349,13 +358,12 @@ export function renderAllTasks() {
             //append task
             contents.appendChild(newTask);
         })
-    })
 }
 
 function addGlobalEventListener(type, selector, callback) {
     document.addEventListener(type, e => {
         if (e.target.matches(selector)) {
-            callback(e);
+            callback();
         }
     })
 }
@@ -400,8 +408,11 @@ function createStatusDropdown(task) {
     const div = document.createElement('div');
     setAttributes(div, {'class':'dropdown'});
     const button = document.createElement('button');
-    setAttributes(button, {'class':'btn btn-secondary dropdown-toggle', 'type':'button', 'data-bs-toggle':'dropdown', 'aria-expanded':'false'});
     button.textContent = task.status;
+    setAttributes(button, {'class':'btn dropdown-toggle', 'type':'button', 'data-bs-toggle':'dropdown', 'aria-expanded':'false'});
+    if(task.status==='Not started yet') {button.classList.add('btn-secondary');};
+    if(task.status==='In progress') {button.classList.add('btn-warning');};
+    if(task.status==='Finished') {button.classList.add('btn-success');}; 
     div.appendChild(button);
     const list = document.createElement('ul');
     setAttributes(list, {'class':'dropdown-menu'});
@@ -461,8 +472,26 @@ function validateSelect(input, validInputs) {
     return false
 }
 
-function sortBy(element) {
+function sortIcon(element) {
     const sort = new Image();
     setAttributes(sort, {'src':Sort, 'width':'10%'});
     element.appendChild(sort);
-}
+} 
+
+function sortTasksByName() {
+    const list = taskList()
+    list.sort((a,b) => {
+        let fa = a.title.toLowerCase();
+        let fb = b.title.toLowerCase();
+
+        if (fa < fb) {
+            return -1;
+        }
+        if (fa > fb) {
+            return 1;
+        }
+        return 0;
+    })
+
+    renderAllTasks(list);
+};
