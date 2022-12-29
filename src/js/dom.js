@@ -336,14 +336,16 @@ export function renderAllTasks() {
             newTask.appendChild(priority);
             //add status
             const status = document.createElement('div');
-            status.classList.add('col','d-flex','justify-content-between');
-            status.textContent = task.status;
+            status.classList.add('col')
+            const statusDropdown = createStatusDropdown(task);
+            status.appendChild(statusDropdown);
+            newTask.appendChild(status);
+            //remove button
             const removeButton = document.createElement('buton');
-            setAttributes(removeButton, {'class':'btn btn-danger remove-task', 'data-id':`${task.id}`})
+            setAttributes(removeButton, {'class':'btn btn-danger remove-task col-1', 'data-id':`${task.id}`})
             removeButton.textContent = 'remove';
             removeButton.addEventListener('click', removeTask);
-            status.appendChild(removeButton);
-            newTask.appendChild(status);
+            newTask.appendChild(removeButton);
             //append task
             contents.appendChild(newTask);
         })
