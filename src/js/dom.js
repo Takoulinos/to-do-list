@@ -1,11 +1,12 @@
 import Logo from '../images/logo.png';
+import Sort from '../images/sort.svg'
 import { projects, Task, Project } from './todos';
 import { format, parseISO, compareAsc } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
 const body = document.querySelector('body');
 const container = document.createElement('div');
-container.classList.add('container');
+container.classList.add('container', 'text-center');
 body.appendChild(container);
 
 export function renderHeader() {
@@ -13,7 +14,6 @@ export function renderHeader() {
     header.classList.add('row', 'text-center');
     header.setAttribute('id', 'header');
     container.appendChild(header);
-
     const logo = new Image();
     logo.src = Logo;
     logo.classList.add('col-2', 'logo');
@@ -61,7 +61,7 @@ function clearPage() {
     }
     else {
         contents = document.createElement('div');
-        contents.classList.add('contents', 'container');
+        contents.classList.add('contents', 'container', 'text-center');
         body.appendChild(contents);
     }
 }
@@ -73,7 +73,7 @@ export function renderProjects() {
     //button to bring up form
     const addNewProject = document.createElement('button');
     addNewProject.textContent = 'Add new project';
-    setAttributes(addNewProject, {'class': 'btn btn-primary', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':'#collapseForm', 'aria-expanded':'false', 'aria-controls':'collapseForm'});
+    setAttributes(addNewProject, {'class': 'd-flex btn btn-primary', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':'#collapseForm', 'aria-expanded':'false', 'aria-controls':'collapseForm'});
     contents.appendChild(addNewProject);
 
     //form for adding new project
@@ -175,31 +175,35 @@ export function renderAllTasks() {
     columnNames.classList.add('row');
     contents.appendChild(columnNames);
     const task = document.createElement('div');
-    task.classList.add('col');
+    task.classList.add('col', 'sort');
     task.textContent = 'Task';
     columnNames.appendChild(task);
+    sortBy(task);
     const dueDate = document.createElement('div');
-    dueDate.classList.add('col');
+    dueDate.classList.add('col', 'sort');
     dueDate.textContent = 'Due Date';
     columnNames.appendChild(dueDate);
+    sortBy(dueDate);
     const priority = document.createElement('div');
-    priority.classList.add('col');
+    priority.classList.add('col', 'sort');
     priority.textContent = 'Priority';
     columnNames.appendChild(priority);
+    sortBy(priority)
     const status = document.createElement('div');
-    status.classList.add('col');
+    status.classList.add('col', 'sort');
     status.textContent = 'Status';
     columnNames.appendChild(status);
+    sortBy(status);
 
     //button to bring up the form
     const addNewTask = document.createElement('button');
     addNewTask.textContent = 'Add new task';
-    setAttributes(addNewTask, {'class': 'btn btn-primary', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':'#collapseForm', 'aria-expanded':'false', 'aria-controls':'collapseForm'});
+    setAttributes(addNewTask, {'class': 'd-flex btn btn-primary', 'type':'button', 'data-bs-toggle':'collapse', 'data-bs-target':'#collapseForm', 'aria-expanded':'false', 'aria-controls':'collapseForm'});
     contents.appendChild(addNewTask);
 
     //form for adding a new task
     const collapseForm = document.createElement('form');
-    setAttributes(collapseForm, {'class':'collapse row needs-validation novalidate', 'id':'collapseForm'});
+    setAttributes(collapseForm, {'class':'collapse row', 'id':'collapseForm'});
     contents.appendChild(collapseForm);
     //project name
     const newTask = document.createElement('div');
@@ -254,6 +258,25 @@ export function renderAllTasks() {
     priotitySelect.appendChild(option4);
     newPriority.appendChild(priotitySelect);
     collapseForm.appendChild(newPriority);
+    //project
+    const selectProject = document.createElement('div');
+    selectProject.classList.add('col');
+    const projectLabel = document.createElement('label');
+    setAttributes(projectLabel, {'class':'form-label', 'for':'selectProject'});
+    projectLabel.textContent = 'Select project';
+    selectProject.appendChild(projectLabel);
+    const projectSelect = document.createElement('select');
+    setAttributes(projectSelect, {'class':'form-select', 'id':'selectProject'});
+    projects.forEach(project => {
+        const option = document.createElement('option');
+        option.textContent = project.title;
+        if(project.title === 'default project'){
+            option.setAttribute('selected', '');
+        }
+        projectSelect.appendChild(option);
+    })
+    selectProject.appendChild(projectSelect);
+    collapseForm.appendChild(selectProject);
     //buttons
     const buttons = document.createElement('div');
     buttons.classList.add('col');
@@ -430,4 +453,10 @@ function validateDate(date) {
 function validateSelect(input, validInputs) {
     if(validInputs.includes(input)) { return true }
     return false
+}
+
+function sortBy(element) {
+    const sort = new Image();
+    setAttributes(sort, {'src':Sort, 'width':'10%'});
+    element.appendChild(sort);
 }

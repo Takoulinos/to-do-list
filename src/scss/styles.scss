@@ -1,18 +1,33 @@
 @import "~bootstrap/scss/bootstrap";
 
 [class^=col]:not(.collapse) {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    background-color: #587ca0;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-color: #7b93aa;
     color: white;
     border: 1px solid white;
+}
+
+.container {
+    border-radius: 10px;
 }
 
 .row {
     background-color: #f8f9fa;
     outline: 1px solid white;
+    border-radius: 10px;
+    height: 10%;
   }
 
   .nav-link {
     cursor: pointer;
+  }
+
+  .col {
+    border-radius: 10px;
+  }
+
+  .sort {
+    cursor: pointer;
+    height: 10%;
   }
