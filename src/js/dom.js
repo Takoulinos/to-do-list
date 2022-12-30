@@ -191,10 +191,11 @@ export function renderAllTasks(list = taskList()) {
     sortIcon(task);
     addGlobalEventListener('click', '.sortByName', sortTasksByName);
     const dueDate = document.createElement('div');
-    dueDate.classList.add('col', 'sort');
+    dueDate.classList.add('col', 'sort', 'sortByDate');
     dueDate.textContent = 'Due Date';
     columnNames.appendChild(dueDate);
     sortIcon(dueDate);
+    addGlobalEventListener('click', '.sortByDate', sortTasksByDate);
     const priority = document.createElement('div');
     priority.classList.add('col', 'sort');
     priority.textContent = 'Priority';
@@ -339,6 +340,7 @@ export function renderAllTasks(list = taskList()) {
             //add date
             const dueDate = document.createElement('div');
             dueDate.classList.add('col');
+            if(typeof(task.dueDate==='string')) {task.dueDate = new Date(task.dueDate)};
             dueDate.textContent = format(task.dueDate, 'dd/MM/yyyy');
             newTask.appendChild(dueDate);
             //add priority
@@ -375,7 +377,7 @@ function setAttributes(el, attrs) {
     for(var key in attrs) {
       el.setAttribute(key, attrs[key]);
     }
-  }
+}
 
 function addTask(task, projectName = 'default project') {
     for (let i = 0; i < projects.length; i++){
@@ -383,12 +385,14 @@ function addTask(task, projectName = 'default project') {
             projects[i].tasks.push(task);
         }
     }
+    localStorage.setItem('projects', JSON.stringify(projects));
     return renderAllTasks();
 }
 
 function addProject(project) {
-    projects.push(project)
-    return renderProjects()
+    projects.push(project);
+    localStorage.setItem('projects', JSON.stringify(projects));
+    return renderProjects();
 }
 
 function removeTask(e) {
@@ -404,6 +408,7 @@ function removeTask(e) {
         }
         if(found===true) {break};
     }
+    localStorage.setItem('projects', JSON.stringify(projects));
     renderAllTasks();
 }
 
@@ -495,8 +500,8 @@ function sortTasksByName() {
         }
         return 0;
     })
-
     renderAllTasks(list);
+    document.querySelector('.sortByName').classList.add('sorted');
 };
 
 function sortTasksByStatus() {
@@ -516,3 +521,32 @@ function sortTasksByStatus() {
 
     renderAllTasks(list);
 };
+
+function sortTasksByDate() {
+    const list = taskList()
+    list.sort((a,b) => {
+        let fa = a.dueDate;
+        let fb = b.dueDate;
+
+        if (fa < fb) {
+            return -1;
+        }
+        if (fa > fb) {
+            return 1;
+        }
+        return 0;
+    })
+
+    renderAllTasks(list);
+}
+
+
+export function checkLocalStorage() {
+    if(localStorage.projects) {
+        projects.pop();
+        const temp = JSON.parse(localStorage.getItem('projects'));
+        temp.forEach(project => {
+            projects.push(project);
+        })
+    }
+}

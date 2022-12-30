@@ -1,8 +1,12 @@
 import '../scss/styles.scss'
-import * as bootstrap from 'bootstrap'
-import { renderHeader, renderNavBar, renderProjects, renderAllTasks } from './dom.js';
+import * as bootstrap from 'bootstrap';
+import { projects } from './todos.js';
+import { renderHeader, renderNavBar, renderProjects, renderAllTasks, checkLocalStorage } from './dom.js';
+import { format, parseISO, compareAsc } from 'date-fns';
 
 
-renderHeader()
-renderNavBar()
+renderHeader();
+renderNavBar();
+checkLocalStorage();
 renderAllTasks();
+
